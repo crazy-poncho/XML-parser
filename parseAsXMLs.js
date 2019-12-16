@@ -129,7 +129,7 @@ const retreiveAppropriateDataByType = data => {
         return ' ';
     }
     if (typeof data === 'object' && isSpace(data)) {
-        return ' ' + data._;
+        return data._;
     }
     
     return '';
