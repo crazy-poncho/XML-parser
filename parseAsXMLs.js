@@ -123,7 +123,7 @@ const isSpace = data => data.hasOwnProperty('xml:space');
 
 const retreiveAppropriateDataByType = data => {
     if (typeof data === 'string') {
-        return data;
+        return ' ' + data;
     }
     if (typeof data === 'object' && isOnlySpace(data)) {
         return ' ';
@@ -143,8 +143,6 @@ const startParsing = (fileReadLiveStudentPath) => {
         return Promise.all([ReadLiveStudentXML]).then(data => {
             const [ReadLiveStudentData] = data;
             const ReadLiveStudent = processReadLive(ReadLiveStudentData);
-
-            console.log(ReadLiveStudent)
 
             return ReadLiveStudent;
         });
