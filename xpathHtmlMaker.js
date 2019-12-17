@@ -1,3 +1,5 @@
+const lodash = require('lodash');
+
 const makeXPathHtml = data => {
     const { header, body, descriptionInfo } = data;
 
@@ -82,7 +84,7 @@ const retrieveParagraphSentences = paragraph => {
     const text = paragraph;
 
     for (let i = 0; i < text.length; i++) {
-        if (isTheEndOfSentencesSymbol(text[i]) && text[i + 1] === ' ') {
+        if (isTheEndOfSentencesSymbol(text[i]) && text[i + 1] === ' ' && isUpperLetter(text[i + 2])) {
             result.push(temp);
             temp = '';
             i += 1;
@@ -96,10 +98,33 @@ const retrieveParagraphSentences = paragraph => {
         temp += text[i];
     }
 
-    return result;
+    return filterMultipleSentencesSymbols(replaceSpecialSymbols(result));
 }
 
+const isUpperLetter = letter => letter === letter.toUpperCase();
+
 const isTheEndOfSentencesSymbol = symbol => ['?', '!', '.'].includes(symbol);
+
+const filterMultipleSentencesSymbols = sentences => {
+    const result = [];
+
+    sentences.forEach(sentence => {
+        result.push(splitSentence(sentence));
+    });
+
+    return lodash.flattenDeep(result);
+};
+
+const splitSentence = sentence => {
+    if (sentence.indexOf('&#8230;') !== -1) {
+        const splitted = sentence.split('&#8230;');
+        splitted[0] = splitted[0].concat('&#8230;');
+
+        return [splitted[0], splitted[1]];
+    }
+
+    return sentence;
+}
 
 const replaceSpecialSymbols = sentences => {
     const allowedSybmols = [
