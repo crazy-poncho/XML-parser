@@ -2,8 +2,6 @@ const makeHtml = parsedData => {
     const headerSeries = parsedData.header.headerSeries;
     const headerLevel = parsedData.header.headerLevel;
     const content = parsedData.content;
-
-    console.log(content)
     
     const html = `
     <html>
