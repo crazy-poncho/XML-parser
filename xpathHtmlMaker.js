@@ -56,7 +56,7 @@ const makeXPathHtml = data => {
                                             <span style="font-size: 16px">
                                                 Sentence ${sentenceIndex + 1}:
                                             </span>
-                                            <span style="font-weight: bold; font-size: 16px">${sentence}.</span>
+                                            <span style="font-size: 16px">${sentence}.</span>
                                         </div>
                                     `;
                                 }).join('')}
