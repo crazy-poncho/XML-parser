@@ -22,16 +22,16 @@ const retrieveReadLiveStudent = () => {
     });
 
     const documentSdt = select('//w:document/w:body/w:sdt', doc);
-    const documentResult = [];
+    const bodyResult = [];
 
     documentSdt.forEach(item => {
         const doc = new dom().parseFromString(item.toString());
         const result = select('//w:sdtContent/w:sdt/w:sdtContent/w:sdt/w:sdtContent/w:p', doc);
 
-        documentResult.push(retrieveParagraphsContent(result, 'body'));
+        bodyResult.push(retrieveParagraphsContent(result, 'body'));
     });
 
-    return { headerResult, documentResult };
+    return { headerResult, bodyResult };
 }
 
 const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
@@ -77,7 +77,7 @@ const groupDecriptionInfo = descriptionInfoContent => {
 
 const startXPathParsing = async () => {
     const header = retrieveReadLiveStudent().headerResult;
-    const body = retrieveReadLiveStudent().documentResult;
+    const body = retrieveReadLiveStudent().bodyResult;
     const descriptionInfo = retrieveDescriptionInfo();
 
     return { header, body, descriptionInfo }
