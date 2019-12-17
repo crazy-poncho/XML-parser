@@ -6,10 +6,10 @@ const xpathNamespaces = require('./xpathNamespaces');
 
 const select = xpath.useNamespaces(xpathNamespaces());
 
-const filePath = 'myDoc/ReadLiveStudent.xml';
+const { FILE_PATH } = require('./constants/common');
 
 const retrieveReadLiveStudent = () => {
-    const xmlReadLiveStudentFile = fs.readFileSync(path.join(__dirname, filePath));
+    const xmlReadLiveStudentFile = fs.readFileSync(path.join(__dirname, FILE_PATH));
     const doc = new dom().parseFromString(xmlReadLiveStudentFile.toString());
     
     const headerTr = select('//w:hdr/w:tbl/w:tr', doc);
@@ -21,10 +21,10 @@ const retrieveReadLiveStudent = () => {
         headerResult.push(retrieveParagraphsContent(result, 'header'));
     });
 
-    const documentSdt = select('//w:document/w:body/w:sdt', doc);
+    const bodySdt = select('//w:document/w:body/w:sdt', doc);
     const bodyResult = [];
 
-    documentSdt.forEach(item => {
+    bodySdt.forEach(item => {
         const doc = new dom().parseFromString(item.toString());
         const result = select('//w:sdtContent/w:sdt/w:sdtContent/w:sdt/w:sdtContent/w:p', doc);
 
@@ -40,20 +40,30 @@ const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
     paragraphs.forEach(paragrapth => {
         const doc = new dom().parseFromString(paragrapth.toString());
         const textResult = select('//w:r/w:t/text()', doc);
+        const bodyText = [];
         let paragrapthText = '';
 
         textResult.forEach(text => {
-            paragrapthText += text.nodeValue;
+            if (paragraphsType === 'body') {
+                const rpr = select(`//w:r[w:t[text()='${text.nodeValue}']]`, doc);
+                const isBold = retrieveWordStyles(rpr, 'b');
+                const isItalic = retrieveWordStyles(rpr, 'i');
+                const isUnderlined = retrieveWordStyles(rpr, 'u');
+
+                bodyText.push({ text: text.nodeValue, isBold, isItalic, isUnderlined });
+            } else {
+                paragrapthText += text.nodeValue;
+            }
         });
 
-        paragrapthsResult.push(paragrapthText);
+        paragrapthsResult.push(paragraphsType === 'body' ? bodyText : paragrapthText);
     });
 
     return paragrapthsResult.filter(item => !!item[0]);
 };
 
 const retrieveDescriptionInfo = () => {
-    const xmlDocumentFile = fs.readFileSync(path.join(__dirname, filePath));
+    const xmlDocumentFile = fs.readFileSync(path.join(__dirname, FILE_PATH));
     const doc = new dom().parseFromString(xmlDocumentFile.toString());
     const result = select('//w:document/w:body/w:p', doc);
 
@@ -74,6 +84,13 @@ const groupDecriptionInfo = descriptionInfoContent => {
 
     return descriptionInfoResult;
 }
+
+const retrieveWordStyles = (rpr, style) => {
+    const doc = new dom().parseFromString(rpr.toString());
+    const result = select(`//w:${style}`, doc);
+
+    return !!result.length;
+};
 
 const startXPathParsing = async () => {
     const header = retrieveReadLiveStudent().headerResult;

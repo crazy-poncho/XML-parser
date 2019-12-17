@@ -1,6 +1,7 @@
 const { 
     retrieveKeyWordsNumber,  
-    retrieveParagraphSentences
+    retrieveParagraphSentences,
+    retrieveParagraphText
 } = require('./helpers/xpathHelpers');
 
 const makeXPathHtml = data => {
@@ -25,7 +26,7 @@ const makeXPathHtml = data => {
                 const storyTitle = infoItem.storyTitle;
                 const keyWordsNumber = retrieveKeyWordsNumber(infoItem.keyWords);
                 const keyWords = infoItem.keyWords.split(', ');
-                const storyTextParagraphs = body[infoItemIndex];
+                const storyTextParagraphs = retrieveParagraphText(body[infoItemIndex]);
                 
                 return `
                     <div>

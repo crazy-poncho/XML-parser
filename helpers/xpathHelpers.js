@@ -2,6 +2,51 @@ const lodash = require('lodash');
 const { ELLIPSIS, DASH } = require('../constants/replacedSpecSymbols');
 const { ORIGIN_ELLIPSIS, ORIGIN_DASH} = require('../constants/originSymbols');
 
+const retrieveParagraphText = paragraphs => {
+    const result = [];
+    
+    paragraphs.forEach(paragraph => {
+        let text = '';
+        
+        paragraph.forEach(detail => {
+            if (detail.isBold && detail.isItalic && detail.isUnderlined) {
+                text += `<span><i><b><u>${detail.text}</u></b></i><span>`;
+                return;
+            }
+            if (detail.isBold && detail.isItalic) {
+                text += `<span><b><i>${detail.text}</i></b><span>`;
+                return;
+            }
+            if (detail.isBold && detail.isUnderlined) {
+                text += `<span><u><b>${detail.text}</b></u><span>`;
+                return;
+            }
+            if (detail.isItalic && detail.isUnderlined) {
+                text += `<span><u><i>${detail.text}</i></u><span>`;
+                return;
+            }
+            if (detail.isBold) {
+                text += `<span><b>${detail.text}</b></span>`;
+                return;
+            }
+            if (detail.isItalic) {
+                text += `<span><i>${detail.text}</i></span>`;
+                return;
+            }
+            if (detail.isUnderlined) {
+                text += `<span><u>${detail.text}</u></span>`;
+                return;
+            }
+    
+            text += `${detail.text}`;
+        });
+
+        result.push(text);
+    });
+
+    return result;
+};
+
 const retrieveKeyWordsNumber = storyTitleIndex => {
     return storyTitleIndex.split(', ').length;
 };
@@ -75,5 +120,6 @@ const replaceSpecialSymbols = sentences => {
 
 module.exports = {
     retrieveKeyWordsNumber,
-    retrieveParagraphSentences
+    retrieveParagraphSentences,
+    retrieveParagraphText
 };
