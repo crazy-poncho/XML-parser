@@ -1,5 +1,4 @@
-const xpath = require('xpath');
-module.exports = select = xpath.useNamespaces({
+const xpathNamespaces = () => ({
     'wpc': 'http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas',
     'cx': 'http://schemas.microsoft.com/office/drawing/2014/chartex',
     'cx1': 'http://schemas.microsoft.com/office/drawing/2015/9/8/chartex',
@@ -30,3 +29,5 @@ module.exports = select = xpath.useNamespaces({
     'wne': 'http://schemas.microsoft.com/office/word/2006/wordml',
     'wps': 'http://schemas.microsoft.com/office/word/2010/wordprocessingShape',
 });
+
+module.exports = xpathNamespaces;

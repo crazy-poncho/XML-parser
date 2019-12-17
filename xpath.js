@@ -1,7 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
-const select = require('./xpathNamespaces');
+const xpathNamespaces = require('./xpathNamespaces');
+
+const select = xpath.useNamespaces(xpathNamespaces());
 
 const filePath = 'myDoc/ReadLiveStudent.xml';
 
