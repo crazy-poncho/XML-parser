@@ -1,4 +1,6 @@
 const lodash = require('lodash');
+const { ELLIPSIS, DASH } = require('../constants/replacedSpecSymbols');
+const { ORIGIN_ELLIPSIS, ORIGIN_DASH} = require('../constants/originSymbols');
 
 const retrieveKeyWordsNumber = storyTitleIndex => {
     return storyTitleIndex.split(', ').length;
@@ -42,9 +44,9 @@ const filterMultipleSentencesSymbols = sentences => {
 };
 
 const splitSentence = sentence => {
-    if (sentence.indexOf('&#8230;') !== -1) {
-        const splitted = sentence.split('&#8230;');
-        splitted[0] = splitted[0].concat('&#8230;');
+    if (sentence.indexOf(ELLIPSIS) !== -1) {
+        const splitted = sentence.split(ELLIPSIS);
+        splitted[0] = splitted[0].concat(ELLIPSIS);
 
         return [splitted[0], splitted[1]];
     }
@@ -54,8 +56,8 @@ const splitSentence = sentence => {
 
 const replaceSpecialSymbols = sentences => {
     const allowedSybmols = [
-        { orignSymbol: '…', replcaedSymbol: '&#8230;' },
-        { orignSymbol: '–', replcaedSymbol: '&mdash;' },
+        { orignSymbol: ORIGIN_ELLIPSIS, replcaedSymbol: ELLIPSIS },
+        { orignSymbol: ORIGIN_DASH, replcaedSymbol: DASH },
     ];
 
     const result = sentences.map(sentence => {
