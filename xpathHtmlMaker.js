@@ -35,7 +35,7 @@ const makeXPathHtml = data => {
                         <div>
                             <span style="font-size: 20px">The keywords entered in the word document are:</span>
                             <span style="font-weight: bold; font-size: 20px">
-                                ${keyWords.map((keyWord, keyWordIndex) => ` ${keyWordIndex + 1}: ${keyWord}`)}
+                                ${keyWords.map((keyWord, keyWordIndex) => ` ${keyWordIndex + 1}: ${keyWord};`).join('')}
                             </span>
                         </div>
                     </div>
