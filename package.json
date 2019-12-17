@@ -21,6 +21,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^2.0.2",
-    "xml2js": "^0.4.22"
+    "xml2js": "^0.4.22",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.27"
   }
 }
