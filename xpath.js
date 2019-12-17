@@ -3,8 +3,10 @@ const path = require('path');
 const dom = require('xmldom').DOMParser;
 const select = require('./xpathNamespaces');
 
+const filePath = 'myDoc/ReadLiveStudent.xml';
+
 const retrieveReadLiveStudent = () => {
-    const xmlReadLiveStudentFile = fs.readFileSync(path.join(__dirname, 'myDoc/ReadLiveStudent1.xml'));
+    const xmlReadLiveStudentFile = fs.readFileSync(path.join(__dirname, filePath));
     const doc = new dom().parseFromString(xmlReadLiveStudentFile.toString());
     
     const headerTr = select('//w:hdr/w:tbl/w:tr', doc);
@@ -48,7 +50,7 @@ const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
 };
 
 const retrieveDescriptionInfo = () => {
-    const xmlDocumentFile = fs.readFileSync(path.join(__dirname, `myDoc/ReadLiveStudent1.xml`));
+    const xmlDocumentFile = fs.readFileSync(path.join(__dirname, filePath));
     const doc = new dom().parseFromString(xmlDocumentFile.toString());
     const result = select('//w:document/w:body/w:p', doc);
 
