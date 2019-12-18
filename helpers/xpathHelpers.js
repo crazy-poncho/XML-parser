@@ -54,7 +54,7 @@ const retrieveKeyWordsNumber = storyTitleIndex => {
 const retrieveParagraphSentences = paragraph => {
     const result = [];
     let temp = '';
-    const text = paragraph;
+    const text = replaceSpecialSymbols(paragraph);
 
     for (let i = 0; i < text.length; i++) {
         if (isTheEndOfSentencesSymbol(text[i]) && text[i + 1] === ' ' && isUpperLetter(text[i + 2])) {
@@ -71,7 +71,7 @@ const retrieveParagraphSentences = paragraph => {
         temp += text[i];
     }
 
-    return filterMultipleSentencesSymbols(replaceSpecialSymbols(result));
+    return filterMultipleSentencesSymbols(result);
 };
 
 const isUpperLetter = letter => letter === letter.toUpperCase();
@@ -99,23 +99,17 @@ const splitSentence = sentence => {
     return sentence;
 };
 
-const replaceSpecialSymbols = sentences => {
+const replaceSpecialSymbols = paragraph => {
     const allowedSybmols = [
         { orignSymbol: ORIGIN_ELLIPSIS, replcaedSymbol: ELLIPSIS },
         { orignSymbol: ORIGIN_DASH, replcaedSymbol: DASH },
     ];
 
-    const result = sentences.map(sentence => {
-        let resSentence = sentence;
-
-        allowedSybmols.forEach(item => {
-            resSentence = resSentence.replace(item.orignSymbol, item.replcaedSymbol);
-        });
-    
-        return resSentence;
+    allowedSybmols.forEach(item => {
+        paragraph = paragraph.replace(item.orignSymbol, item.replcaedSymbol);
     });
 
-    return result;
+    return paragraph;
 };
 
 module.exports = {
