@@ -65,8 +65,7 @@ const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
 const retrieveDescriptionInfo = () => {
     const xmlDocumentFile = fs.readFileSync(path.join(__dirname, FILE_PATH));
     const doc = new dom().parseFromString(xmlDocumentFile.toString());
-    const result = select('//w:document/w:body/w:p', doc);
-
+    const result = filterDiscriptionParagraphs(select('//w:document/w:body/w:p', doc));
     const descriptionInfoContent = retrieveParagraphsContent(result, 'descriptionInfo');
 
     return groupDecriptionInfo(descriptionInfoContent);
@@ -83,6 +82,15 @@ const groupDecriptionInfo = descriptionInfoContent => {
     }
 
     return descriptionInfoResult;
+}
+
+const filterDiscriptionParagraphs = paragraphs => {
+    return paragraphs.filter(paragraph => {
+        const doc = new dom().parseFromString(paragraph.toString());
+        const result = select('//w:r/w:rPr/w:rStyle/@w:val', doc);
+
+        return !!result.length;
+    });
 }
 
 const retrieveWordStyles = (r, style) => {
