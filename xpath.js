@@ -1,18 +1,12 @@
-const fs = require('fs');
-const path = require('path');
 const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 const xpathNamespaces = require('./xpathNamespaces');
 
 const select = xpath.useNamespaces(xpathNamespaces());
 
-const { FILE_PATH } = require('./constants/common');
-
-const retrieveReadLiveStudent = () => {
-    const xmlReadLiveStudentFile = fs.readFileSync(path.join(__dirname, FILE_PATH));
-    const doc = new dom().parseFromString(xmlReadLiveStudentFile.toString());
-    
-    const headerTr = select('//w:hdr/w:tbl/w:tr', doc);
+const retrieveReadLiveStudent = (documentXml, headerXml) => {
+    const headerDoc = new dom().parseFromString(headerXml.toString());
+    const headerTr = select('//w:hdr/w:tbl/w:tr', headerDoc);
     const headerResult = [];
     headerTr.forEach(item => {
         const doc = new dom().parseFromString(item.toString());
@@ -21,7 +15,8 @@ const retrieveReadLiveStudent = () => {
         headerResult.push(retrieveParagraphsContent(result, 'header'));
     });
 
-    const bodySdt = select('//w:document/w:body/w:sdt', doc);
+    const bodyDoc = new dom().parseFromString(documentXml.toString());
+    const bodySdt = select('//w:document/w:body/w:sdt', bodyDoc);
     const bodyResult = [];
 
     bodySdt.forEach(item => {
@@ -31,7 +26,7 @@ const retrieveReadLiveStudent = () => {
         bodyResult.push(retrieveParagraphsContent(result, 'body'));
     });
 
-    return { headerResult, bodyResult };
+    return { header: headerResult, body: bodyResult };
 }
 
 const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
@@ -62,9 +57,8 @@ const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
     return paragrapthsResult.filter(item => !!item[0]);
 };
 
-const retrieveDescriptionInfo = () => {
-    const xmlDocumentFile = fs.readFileSync(path.join(__dirname, FILE_PATH));
-    const doc = new dom().parseFromString(xmlDocumentFile.toString());
+const retrieveDescriptionInfo = documentXml => {
+    const doc = new dom().parseFromString(documentXml.toString());
     const result = filterDiscriptionParagraphs(select('//w:document/w:body/w:p', doc));
     const descriptionInfoContent = retrieveParagraphsContent(result, 'descriptionInfo');
 
@@ -100,12 +94,11 @@ const retrieveWordStyles = (r, style) => {
     return !!result.length;
 };
 
-const startXPathParsing = async () => {
-    const header = retrieveReadLiveStudent().headerResult;
-    const body = retrieveReadLiveStudent().bodyResult;
-    const descriptionInfo = retrieveDescriptionInfo();
+const startXPathParsing = async (documentXml, headerXml) => {
+    const { header, body } = retrieveReadLiveStudent(documentXml, headerXml);
+    const descriptionInfo = retrieveDescriptionInfo(documentXml);
 
-    return { header, body, descriptionInfo }
+    return { header, body, descriptionInfo };
 }
 
 module.exports = { startXPathParsing };
