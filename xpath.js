@@ -26,7 +26,7 @@ const retrieveReadLiveStudent = () => {
 
     bodySdt.forEach(item => {
         const doc = new dom().parseFromString(item.toString());
-        const result = select('//w:sdtContent/w:sdt/w:sdtContent/w:sdt/w:sdtContent/w:p', doc);
+        const result = select('//w:sdtContent/w:p', doc);
 
         bodyResult.push(retrieveParagraphsContent(result, 'body'));
     });
@@ -45,10 +45,10 @@ const retrieveParagraphsContent = (paragraphs, paragraphsType) => {
 
         textResult.forEach(text => {
             if (paragraphsType === 'body') {
-                const rpr = select(`//w:r[w:t[text()='${text.nodeValue}']]`, doc);
-                const isBold = retrieveWordStyles(rpr, 'b');
-                const isItalic = retrieveWordStyles(rpr, 'i');
-                const isUnderlined = retrieveWordStyles(rpr, 'u');
+                const r = select(`//w:r[w:t[text()='${text.nodeValue}']]`, doc);
+                const isBold = retrieveWordStyles(r, 'b');
+                const isItalic = retrieveWordStyles(r, 'i');
+                const isUnderlined = retrieveWordStyles(r, 'u');
 
                 bodyText.push({ text: text.nodeValue, isBold, isItalic, isUnderlined });
             } else {
@@ -85,8 +85,8 @@ const groupDecriptionInfo = descriptionInfoContent => {
     return descriptionInfoResult;
 }
 
-const retrieveWordStyles = (rpr, style) => {
-    const doc = new dom().parseFromString(rpr.toString());
+const retrieveWordStyles = (r, style) => {
+    const doc = new dom().parseFromString(r.toString());
     const result = select(`//w:${style}`, doc);
 
     return !!result.length;
